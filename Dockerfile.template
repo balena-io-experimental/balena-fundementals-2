@@ -1,0 +1,18 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-python:latest
+
+#Enable systemd init system in the container
+ENV INITSYSTEM on
+
+# pip install python deps from requirements.txt
+# For caching until requirements.txt changes
+ADD ./requirements.txt /requirements.txt
+RUN pip install -r /requirements.txt
+
+# Copy source code into a container directory
+COPY /app /usr/src/app
+
+#Copy all the initialisation scripts
+COPY ./*.sh /
+
+# run python script when container lands on device
+CMD ["bash", "start.sh"]
